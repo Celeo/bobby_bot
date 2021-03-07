@@ -1,24 +1,40 @@
-defmodule BotSupervisor do
+defmodule Bot.Application do
+  use Application
+  require Logger
+
+  @impl true
+  @spec start(
+          Application.start_type(),
+          term()
+        ) :: {:ok, pid()} | {:ok, pid(), Application.state()} | {:error, term()}
+  def start(_type, _args) do
+    Logger.info("Starting application")
+    Supervisor.start_link([Bot.Supervisor], strategy: :one_for_one)
+  end
+end
+
+defmodule Bot.Supervisor do
   use Supervisor
+  require Logger
 
   def start_link(args \\ []) do
+    Logger.info("Starting supervisor")
     Supervisor.start_link(__MODULE__, args, name: __MODULE__)
   end
 
   @impl true
-  def init(_init_arg) do
-    children = [BotConsumer]
-
-    Supervisor.init(children, strategy: :one_for_one)
+  def init(_args) do
+    Supervisor.init([Bot.Consumer], strategy: :one_for_one)
   end
 end
 
-defmodule BotConsumer do
+defmodule Bot.Consumer do
   use Nostrum.Consumer
-
+  require Logger
   alias Nostrum.Api
 
   def start_link do
+    Logger.info("Starting consumer")
     Consumer.start_link(__MODULE__)
   end
 
@@ -37,7 +53,5 @@ defmodule BotConsumer do
     end
   end
 
-  def handle_event(_event) do
-    :noop
-  end
+  def handle_event(_event), do: :noop
 end

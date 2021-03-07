@@ -15,9 +15,10 @@ A joke Discord bot.
 
 ## Deploying
 
-1. Run `MIX_ENV=prod mix release`
+1. Run `MIX_ENV=prod mix release --overwrite`
 1. Then use `./_build/prod/rel/bobby_discord_bot` to send to your server
 1. Once there, run `./bobby_discord_bot/bin/bobby_discord_bot daemon` to start the run daemon
+1. Connect to the daemon with `./bobby_discord_bot/bin/bobby_discord_bot remote` and run `BotSupervisor.start_link()`
 
 ## License
 
