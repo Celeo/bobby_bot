@@ -1,0 +1,8 @@
+use Mix.Config
+
+config :nostrum,
+  token: "",
+  shards: 1
+
+config :logger,
+  level: :info
