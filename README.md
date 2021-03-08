@@ -10,15 +10,10 @@ A joke Discord bot.
 
 ## Using
 
-1. Supply a Discord bot token in your environment so it can be picked up by `./config/config.exs`
-1. You can run the supervisor through iex with `iex -S mix` and `BotSupervisor.start_link()`
-
-## Deploying
-
-1. Run `MIX_ENV=prod mix release --overwrite`
-1. Then use `./_build/prod/rel/bobby_discord_bot` to send to your server
-1. Once there, run `./bobby_discord_bot/bin/bobby_discord_bot daemon` to start the run daemon
-1. Connect to the daemon with `./bobby_discord_bot/bin/bobby_discord_bot remote` and run `BotSupervisor.start_link()`
+1. Clone
+1. Create an `.env` file with your Discord bot token, like `DISCORD_TOKEN=your_token_here`
+1. If you have [just](https://github.com/casey/just), run `just build`
+1. If you don't, then source the `.env` file and run the Docker command in `Justfile`
 
 ## License
 
