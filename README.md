@@ -10,7 +10,7 @@ A joke Discord bot.
 
 ## Using
 
-1. Copy `./config/config.exs.example` or `./config/config.exs` and supply a Discord bot token
+1. Supply a Discord bot token in your environment so it can be picked up by `./config/config.exs`
 1. You can run the supervisor through iex with `iex -S mix` and `BotSupervisor.start_link()`
 
 ## Deploying

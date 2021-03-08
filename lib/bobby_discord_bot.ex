@@ -3,10 +3,6 @@ defmodule Bot.Application do
   require Logger
 
   @impl true
-  @spec start(
-          Application.start_type(),
-          term()
-        ) :: {:ok, pid()} | {:ok, pid(), Application.state()} | {:error, term()}
   def start(_type, _args) do
     Logger.info("Starting application")
     Supervisor.start_link([Bot.Supervisor], strategy: :one_for_one)

@@ -1,17 +1,17 @@
 FROM bitwalker/alpine-elixir:latest AS release_stage
 
-COPY mix.exs .
-COPY mix.lock .
+ARG DISCORD_TOKEN
+ENV DISCORD_TOKEN=${DISCORD_TOKEN}
+ENV MIX_ENV=prod
+
+COPY mix.exs mix.lock ./
 RUN mix deps.get
 RUN mix deps.compile
-COPY config .
-COPY lib .
+COPY config/config.exs ./
+COPY lib ./
 
-ENV MIX_ENV=prod
 RUN mix release
 
 FROM bitwalker/alpine-elixir:latest AS run_stage
-COPY --from=release_stage $HOME/_build .
-RUN chown -R default: ./prod
-USER default
-CMD ["./prod/rel/bobby_discord_bot/bin/bobby_discord_bot", "start"]
+COPY --from=release_stage $HOME/_build/prod/rel/bobby_discord_bot .
+CMD ["./bin/bobby_discord_bot", "start"]

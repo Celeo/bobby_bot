@@ -1,7 +1,7 @@
 use Mix.Config
 
 config :nostrum,
-  token: "",
+  token: System.get_env("DISCORD_TOKEN"),
   shards: 1
 
 config :logger,
