@@ -8,3 +8,4 @@ erl_crash.dump
 bobby_discord_bot-*.tar
 /tmp
 .env
+image.bin
