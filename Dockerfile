@@ -1,4 +1,4 @@
-FROM bitwalker/alpine-elixir:latest AS release_stage
+FROM docker.io/bitwalker/alpine-elixir:latest AS release_stage
 
 ARG DISCORD_TOKEN
 ENV MIX_ENV=prod
@@ -12,6 +12,6 @@ COPY config ./config
 COPY lib ./lib
 RUN mix release
 
-FROM bitwalker/alpine-elixir:latest AS run_stage
+FROM docker.io/bitwalker/alpine-elixir:latest AS run_stage
 COPY --from=release_stage $HOME/_build/prod/rel/bobby_discord_bot .
 CMD ["./bin/bobby_discord_bot", "start"]
