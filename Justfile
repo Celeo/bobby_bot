@@ -1,4 +1,5 @@
 SSH_TARGET := "do"
+IMAGE_FILE := "bobby_bot.image.bin"
 
 default:
 
@@ -9,7 +10,8 @@ build:
   podman build . -t celeo/bobby_bot --build-arg DISCORD_TOKEN=${DISCORD_TOKEN}
 
 image-save:
-  podman image save --compress --output image.bin celeo/bobby_bot
+  rm -f {{IMAGE_FILE}}
+  podman image save --compress --output {{IMAGE_FILE}} celeo/bobby_bot
 
 deploy: build image-save
-  scp image.bin {{SSH_TARGET}}:/srv/
+  scp {{IMAGE_FILE}} {{SSH_TARGET}}:/srv/
