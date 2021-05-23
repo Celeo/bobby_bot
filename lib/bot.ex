@@ -20,7 +20,8 @@ defmodule Bot.Supervisor do
 
   @impl true
   def init(_args) do
-    Supervisor.init([Bot.Consumer], strategy: :one_for_one)
+    children = [Bot.Consumer, Bot.ResponseCooldown]
+    Supervisor.init(children, strategy: :one_for_one)
   end
 end
 
@@ -53,17 +54,24 @@ defmodule Bot.Consumer do
   end
 
   defp handle_call_name(msg) do
-    # 0.05% chance
-    if Enum.random(1..200) == 200 do
-      Nostrum.Api.create_message!(
-        msg.channel_id,
-        content: "Bitch",
-        message_reference: %{message_id: msg.id}
-      )
+    # only allow the response so often
+    if Bot.ResponseCooldown.get() == 0 do
+      # 0.25% chance thereafter
+      if Enum.random(1..400) == 1 do
+        Logger.info("Responded to message randomly")
+
+        Nostrum.Api.create_message!(
+          msg.channel_id,
+          content: "Bitch",
+          message_reference: %{message_id: msg.id}
+        )
+      end
     end
   end
 
   def handle_event({:MESSAGE_CREATE, msg, _ws_state}) do
+    Bot.ResponseCooldown.decrement()
+
     if not handle_mention(msg) do
       handle_call_name(msg)
     end
