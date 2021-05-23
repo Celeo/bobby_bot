@@ -34,7 +34,7 @@ defmodule Bot.Consumer do
     Consumer.start_link(__MODULE__)
   end
 
-  def handle_event({:MESSAGE_CREATE, msg, _ws_state}) do
+  defp handle_mention(msg) do
     author_is_bot =
       case msg.author.bot do
         true -> true
@@ -46,6 +46,26 @@ defmodule Bot.Consumer do
     if not author_is_bot and mentions_me do
       response = Enum.take_random(Data.quotes(), 1) |> Enum.at(0)
       Api.create_message!(msg.channel_id, response)
+      true
+    else
+      false
+    end
+  end
+
+  defp handle_call_name(msg) do
+    # 0.05% chance
+    if Enum.random(1..200) == 200 do
+      Nostrum.Api.create_message!(
+        msg.channel_id,
+        content: "Bitch",
+        message_reference: %{message_id: msg.id}
+      )
+    end
+  end
+
+  def handle_event({:MESSAGE_CREATE, msg, _ws_state}) do
+    if not handle_mention(msg) do
+      handle_call_name(msg)
     end
   end
 
