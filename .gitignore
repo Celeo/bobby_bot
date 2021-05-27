@@ -7,5 +7,5 @@ erl_crash.dump
 *.ez
 bobby_discord_bot-*.tar
 /tmp
-.env
+.env*
 bobby_bot.image.bin

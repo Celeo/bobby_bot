@@ -2,13 +2,15 @@ defmodule Bot.ResponseCooldown do
   use GenServer
   require Logger
 
+  @cooldown_by 500
+
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end
 
   @impl true
   def init(_) do
-    {:ok, 200}
+    {:ok, @cooldown_by}
   end
 
   @impl true

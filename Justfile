@@ -6,7 +6,7 @@ default:
 build:
   #!/usr/bin/env bash
   set -euxo pipefail
-  source .env
+  source .env.prod
   podman build . -t celeo/bobby_bot --build-arg DISCORD_TOKEN=${DISCORD_TOKEN}
 
 image-save:
