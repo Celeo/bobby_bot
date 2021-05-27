@@ -2,7 +2,7 @@ defmodule Bot.ResponseCooldown do
   use GenServer
   require Logger
 
-  @cooldown_by 500
+  @cooldown_by 300
 
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
@@ -10,39 +10,35 @@ defmodule Bot.ResponseCooldown do
 
   @impl true
   def init(_) do
-    {:ok, @cooldown_by}
+    {:ok, Map.new()}
   end
 
   @impl true
-  def handle_call(:get, _from, count) do
-    {:reply, count, count}
+  def handle_call({:get, guild_id}, _from, cooldowns) do
+    {:reply, Map.get(cooldowns, guild_id, @cooldown_by), cooldowns}
   end
 
   @impl true
-  def handle_call({:set, new_count}, _from, _count) do
-    {:reply, :ok, new_count}
+  def handle_call({:set, guild_id, new_count}, _from, cooldowns) do
+    new_cooldowns = Map.put(cooldowns, guild_id, new_count)
+    {:reply, :ok, new_cooldowns}
   end
 
   @impl true
-  def handle_call(:decrement, _from, count) do
-    new_count =
-      case count do
-        0 -> 0
-        n -> n - 1
-      end
-
-    {:reply, :ok, new_count}
+  def handle_call({:decrement, guild_id}, _from, cooldowns) do
+    current_count = Map.get(cooldowns, guild_id, @cooldown_by)
+    {:reply, :ok, Map.put(cooldowns, guild_id, current_count - 1)}
   end
 
-  def get() do
-    GenServer.call(__MODULE__, :get)
+  def get(guild_id) do
+    GenServer.call(__MODULE__, {:get, guild_id})
   end
 
-  def decrement() do
-    GenServer.call(__MODULE__, :decrement)
+  def decrement(guild_id) do
+    GenServer.call(__MODULE__, {:decrement, guild_id})
   end
 
-  def set_triggered() do
-    GenServer.call(__MODULE__, {:set, 200})
+  def set_triggered(guild_id) do
+    GenServer.call(__MODULE__, {:set, guild_id, @cooldown_by})
   end
 end

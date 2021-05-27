@@ -54,8 +54,8 @@ defmodule Bot.Consumer do
   end
 
   defp handle_call_name(msg) do
-    # only allow the response so often
-    if Bot.ResponseCooldown.get() == 0 do
+    # only allow the response so often per server
+    if Bot.ResponseCooldown.get(msg.guild_id) == 0 do
       # 0.25% chance thereafter
       if Enum.random(1..400) == 1 do
         Logger.info("Responded to message randomly")
@@ -70,7 +70,7 @@ defmodule Bot.Consumer do
   end
 
   def handle_event({:MESSAGE_CREATE, msg, _ws_state}) do
-    Bot.ResponseCooldown.decrement()
+    Bot.ResponseCooldown.decrement(msg.guild_id)
 
     if not handle_mention(msg) do
       handle_call_name(msg)
