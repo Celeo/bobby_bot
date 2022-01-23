@@ -1,19 +1,18 @@
-# bobby_discord_bot
+# bobby_bot
 
 A joke Discord bot.
 
 ## Installing
 
-1. Install [Elixir](https://elixir-lang.org/)
+1. Install [Deno](deno.land/)
 1. Clone the repo
-1. Run `mix deps.get` and `mix compile`
 
 ## Using
 
 1. Clone
-1. Create an `.env` file with your Discord bot token, like `DISCORD_TOKEN=your_token_here`
-1. If you have [just](https://github.com/casey/just), run `just build`
-1. If you don't, then source the `.env` file and run the Docker command in `Justfile`
+1. Create an `.env` file with your Discord bot token, like `DISCORD_BOT_TOKEN=your_token_here`
+1. If you have [just](https://github.com/casey/just), run `just` to start the bot
+1. If you don't, then run `deno run --allow-read=.env,.env.defaults --allow-net=discord.com,gateway.discord.gg main.ts` to start the bot
 
 ## License
 
