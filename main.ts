@@ -87,7 +87,7 @@ async function main(token: string | undefined): Promise<void> {
   const cooldownMap = {};
   const baseBot = createBot({
     token,
-    intents: ["GuildMessages"],
+    intents: ["GuildMessages", "DirectMessages"],
     botId: BigInt(atob(token.split(".")[0])),
     events: {
       ready() {
