@@ -2,9 +2,10 @@ import {
   Bot,
   config,
   createBot,
-  DiscordenoMessage,
   enableCachePlugin,
   enableCacheSweepers,
+  GatewayIntents,
+  Message,
   sendMessage,
   startBot,
 } from "./deps.ts";
@@ -15,7 +16,7 @@ const COOLDOWN_RESET_VALUE = 1000;
 
 async function mentionHandler(
   bot: Bot,
-  message: DiscordenoMessage,
+  message: Message,
 ): Promise<void> {
   if (!message.mentionedUserIds.includes(bot.id)) {
     return;
@@ -34,7 +35,7 @@ async function mentionHandler(
 async function calloutHandler(
   bot: Bot,
   calloutCooldown: Record<string, number>,
-  message: DiscordenoMessage,
+  message: Message,
 ) {
   if (message.guildId === undefined) {
     return;
@@ -64,9 +65,9 @@ async function calloutHandler(
 async function messageCreateHandler(
   bot: Bot,
   calloutCooldown: Record<string, number>,
-  message: DiscordenoMessage,
+  message: Message,
 ): Promise<void> {
-  if (message.isBot) {
+  if (message.isFromBot) {
     return;
   }
   try {
@@ -80,14 +81,14 @@ async function messageCreateHandler(
 async function main(token: string | undefined): Promise<void> {
   if (!token) {
     console.log(
-      `No token supplied, set the ${DISCORD_BOT_TOKEN} environment variable and run again`,
+      `No token supplied; set the ${DISCORD_BOT_TOKEN} environment variable and run again`,
     );
     return;
   }
   const cooldownMap = {};
   const baseBot = createBot({
     token,
-    intents: ["GuildMessages", "DirectMessages"],
+    intents: GatewayIntents.GuildMessages | GatewayIntents.DirectMessages,
     botId: BigInt(atob(token.split(".")[0])),
     events: {
       ready() {
