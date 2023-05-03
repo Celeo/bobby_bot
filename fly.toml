@@ -1,7 +1,2 @@
-# fly.toml app configuration file generated for celeo-bobby-bot on 2023-05-03T15:20:13-07:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
 app = "celeo-bobby-bot"
 primary_region = "lax"
