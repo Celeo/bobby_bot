@@ -1,9 +1,6 @@
 {
   "tasks": {
-    "run": "deno run --allow-read=.env,.env.defaults --allow-net main.ts",
-    "compile": "deno compile --allow-read=.env,.env.defaults --allow-net --output bobby_bot main.ts",
-    "deploy": "scp bobby_bot do:/srv/bobby_bot.new",
-    "docker:build": "docker build -t bobby_bot .",
-    "docker:run": "docker run --rm -v ./.env:/opt/.env bobby_bot"
+    "run": "deno run --allow-read=.env,.env.defaults,.env.example --allow-env --allow-net main.ts",
+    "compile": "deno compile --allow-read=.env,.env.defaults,.env.example --allow-env --allow-net --output bobby_bot main.ts"
   }
 }

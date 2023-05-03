@@ -1,14 +1,12 @@
 import {
   Bot,
-  config,
   createBot,
-  enableCachePlugin,
-  enableCacheSweepers,
   GatewayIntents,
   Message,
   sendMessage,
   startBot,
-} from "./deps.ts";
+} from "https://deno.land/x/discordeno@17.0.1/mod.ts";
+import "https://deno.land/std@0.185.0/dotenv/load.ts";
 import { RESPONSES } from "./messages.ts";
 
 const DISCORD_BOT_TOKEN = "DISCORD_BOT_TOKEN";
@@ -86,9 +84,9 @@ async function main(token: string | undefined): Promise<void> {
     return;
   }
   const cooldownMap = {};
-  const baseBot = createBot({
+  const bot = createBot({
     token,
-    intents: GatewayIntents.GuildMessages | GatewayIntents.DirectMessages,
+    intents: GatewayIntents.GuildMessages | GatewayIntents.MessageContent,
     botId: BigInt(atob(token.split(".")[0])),
     events: {
       ready() {
@@ -99,13 +97,10 @@ async function main(token: string | undefined): Promise<void> {
       },
     },
   });
-  const bot = enableCachePlugin(baseBot);
-  enableCacheSweepers(bot);
   console.log("Starting bot ...");
   await startBot(bot);
 }
 
 if (import.meta.main) {
-  const dotenv = config();
-  await main(dotenv[DISCORD_BOT_TOKEN]);
+  await main(Deno.env.get(DISCORD_BOT_TOKEN));
 }
