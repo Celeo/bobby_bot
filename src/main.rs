@@ -96,6 +96,7 @@ async fn handle_event(
                 .reply(msg.id)
                 .content(response)?
                 .await?;
+            info!("Responded to {} in {}", msg.author.name, msg.channel_id);
             return Ok(());
         }
 
@@ -120,6 +121,10 @@ async fn handle_event(
                 .content("Bitch")?
                 .await?;
             let _ = message_count.lock().unwrap().remove(&guild_id);
+            info!(
+                "Random call-out triggered for {} in {}",
+                msg.author.name, msg.channel_id
+            );
         }
     }
     Ok(())
