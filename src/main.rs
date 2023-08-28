@@ -17,7 +17,7 @@ use twilight_model::id::Id;
 mod messages;
 use messages::MESSAGES;
 
-const MESSAGE_RESPONSE_THRESHOLD: u64 = 1_000;
+const MESSAGE_RESPONSE_THRESHOLD: u64 = 5_000;
 
 /// Parse a bot ID from the token.
 ///
