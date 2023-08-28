@@ -8,7 +8,7 @@ RUN --mount=type=cache,target=/usr/local/cargo,from=rust:latest,source=/usr/loca
     cargo build --release && mv ./target/release/bobby_bot ./bobby_bot
 
 # Runtime image
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 RUN apt update && apt install ca-certificates -y && apt-get clean
 # Run as "app" user
 RUN useradd -ms /bin/bash app
