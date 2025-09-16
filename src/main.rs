@@ -1,23 +1,23 @@
 #![deny(clippy::all, clippy::pedantic)]
 
+mod messages;
+
+use crate::messages::MESSAGES;
 use anyhow::Result;
 use base64::{engine::general_purpose, Engine as _};
 use dotenv::dotenv;
 use log::{error, info, warn};
-use rand::{seq::SliceRandom, Rng};
+use rand::{prelude::IndexedRandom, Rng};
 use std::{
     collections::HashMap,
     env,
     sync::{Arc, Mutex},
 };
-use twilight_gateway::{Event, Intents, Shard, ShardId};
+use twilight_gateway::{Event, EventTypeFlags, Intents, Shard, ShardId, StreamExt};
 use twilight_http::Client as HttpClient;
 use twilight_model::id::Id;
 
-mod messages;
-use messages::MESSAGES;
-
-const MESSAGE_RESPONSE_THRESHOLD: u64 = 5_000;
+const MESSAGE_RESPONSE_THRESHOLD: u64 = 2_500;
 
 /// Parse a bot ID from the token.
 ///
@@ -52,15 +52,9 @@ async fn main() {
 
     info!("Waiting for events");
     loop {
-        let event = match shard.next_event().await {
-            Ok(event) => event,
-            Err(source) => {
-                warn!("Error receiving event: {:?}", source);
-                if source.is_fatal() {
-                    break;
-                }
-                continue;
-            }
+        let Some(Ok(event)) = shard.next_event(EventTypeFlags::all()).await else {
+            warn!("Error receiving event");
+            continue;
         };
         let last_seen = Arc::clone(&message_count);
         let http = Arc::clone(&http);
@@ -91,10 +85,10 @@ async fn handle_event(
             .iter()
             .any(|mention| mention.id == Id::new(bot_id));
         if mentioned_self && !msg.mention_everyone {
-            let response = MESSAGES.choose(&mut rand::thread_rng()).unwrap();
+            let response = MESSAGES.choose(&mut rand::rng()).unwrap();
             http.create_message(msg.channel_id)
                 .reply(msg.id)
-                .content(response)?
+                .content(response)
                 .await?;
             info!("Responded to {} in {}", msg.author.name, msg.channel_id);
             return Ok(());
@@ -115,10 +109,10 @@ async fn handle_event(
         // There must have been a certain amount of messages in the server and a rare
         // random chance for this response to trigger, after which the messages count
         // is reset.
-        if val >= MESSAGE_RESPONSE_THRESHOLD && rand::thread_rng().gen_range(0..400) == 1 {
+        if val >= MESSAGE_RESPONSE_THRESHOLD && rand::rng().random_range(0..400) == 1 {
             http.create_message(msg.channel_id)
                 .reply(msg.id)
-                .content("Bitch")?
+                .content("Bitch")
                 .await?;
             let _ = message_count.lock().unwrap().remove(&guild_id);
             info!(
