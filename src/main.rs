@@ -17,7 +17,7 @@ use twilight_gateway::{Event, EventTypeFlags, Intents, Shard, ShardId, StreamExt
 use twilight_http::Client as HttpClient;
 use twilight_model::id::Id;
 
-const MESSAGE_RESPONSE_THRESHOLD: u64 = 2_500;
+const MESSAGE_RESPONSE_THRESHOLD: u64 = 1_000;
 
 /// Parse a bot ID from the token.
 ///
