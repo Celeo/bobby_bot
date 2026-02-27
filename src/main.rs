@@ -17,7 +17,7 @@ use twilight_gateway::{Event, EventTypeFlags, Intents, Shard, ShardId, StreamExt
 use twilight_http::Client as HttpClient;
 use twilight_model::id::Id;
 
-const MESSAGE_RESPONSE_THRESHOLD: u64 = 1_000;
+const MESSAGE_RESPONSE_THRESHOLD: u64 = 250;
 
 /// Parse a bot ID from the token.
 ///
@@ -109,7 +109,7 @@ async fn handle_event(
         // There must have been a certain amount of messages in the server and a rare
         // random chance for this response to trigger, after which the messages count
         // is reset.
-        if val >= MESSAGE_RESPONSE_THRESHOLD && rand::rng().random_range(0..400) == 1 {
+        if val >= MESSAGE_RESPONSE_THRESHOLD && rand::rng().random_range(0..100) == 1 {
             http.create_message(msg.channel_id)
                 .reply(msg.id)
                 .content("Bitch")
